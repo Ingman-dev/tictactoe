@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import Player from './components/choosePlayer';
 
 class App extends Component {
 
@@ -8,24 +9,58 @@ class App extends Component {
     this.state = {
       board: Array(9).fill(null),
 
-      player: "X"
+      player: null,
+
+      winner: null
+    }
+  }
+
+  checkWinner () {
+    let winLines =
+    [
+      ["0", "1", "2"],
+      ["3", "4", "5"],
+      ["6", "7", "8"],
+      ["0", "3", "6"],
+      ["1", "4", "7"],
+      ["2", "5", "8"],
+      ["0", "4", "8"],
+      ["2", "4", "6"]
+    ]
+    for(let i = 0; i < winLines.length; i++) {
+      const [a, b, c] = winLines[i]
+      if(this.state.board[a] && this.state.board[a] === this.state.board[b] && this.state.board[c]) {
+        alert('You won!');
+        this.setState({
+          winner: this.state.player
+        }) 
+      }
     }
   }
 
   handleClick(index) {
-    let newBoard = this.state.board
+    if (this.state.player && !this.state.winner) {
+        let newBoard = this.state.board
 
-    if (this.state.board[index] === null ) {
-      newBoard[index] = this.state.player
+      if (this.state.board[index] === null && !this.state.winner ) {
+        newBoard[index] = this.state.player
 
-      this.setState({
-        board: newBoard,
-        player: this.state.player === "X" ? "O" : "X"
-      })
+        this.setState({
+          board: newBoard,
+          player: this.state.player === "X" ? "O" : "X"
+        })
+
+        this.checkWinner()
+      }
     }
     
     
     
+    
+  }
+
+  setPlayer(player) {
+    this.setState({player})
   }
 
   render() {
@@ -39,9 +74,14 @@ class App extends Component {
        </div>
        )
 
+    let status = this.state.player ? 
+    <h2>Next player is {this.state.player}</h2> : 
+    <Player player={(e) => this.setPlayer(e)} /> 
+
   return (
     <div className="container">
       <h1>Tic Tac Toe</h1>
+      {status}
     <div className="board">
       {Box}
     </div>
