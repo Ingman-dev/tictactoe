@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
-import Player from './components/choosePlayer';
+
+import Status from './components/Status';
 
 class App extends Component {
 
@@ -27,9 +28,16 @@ class App extends Component {
       ["0", "4", "8"],
       ["2", "4", "6"]
     ]
+
+    this.checkMatch(winLines)
+    
+  }
+
+  checkMatch(winLines) {
     for(let i = 0; i < winLines.length; i++) {
       const [a, b, c] = winLines[i]
-      if(this.state.board[a] && this.state.board[a] === this.state.board[b] && this.state.board[c]) {
+      let board = this.state.board
+      if(board[a] && board[a] === board[b] && board[c]) {
         alert('You won!');
         this.setState({
           winner: this.state.player
@@ -53,38 +61,42 @@ class App extends Component {
         this.checkWinner()
       }
     }
-    
-    
-    
-    
   }
 
   setPlayer(player) {
     this.setState({player})
   }
 
+  renderBoxes() {
+    return this.state.board.map(
+      (box, index) => 
+      <div className="box" 
+      key={index} 
+      onClick={() => this.handleClick(index)}>
+        {box}
+        </div>
+        )
+  }
+
+  reset() {
+    this.setState({
+      player: null,
+      winner: null,
+      board: Array(9).fill(null)
+    })
+  }
+
   render() {
-
-   const Box = this.state.board.map(
-     (box, index) => 
-     <div className="box" 
-     key={index} 
-     onClick={() => this.handleClick(index)}>
-       {box}
-       </div>
-       )
-
-    let status = this.state.player ? 
-    <h2>Next player is {this.state.player}</h2> : 
-    <Player player={(e) => this.setPlayer(e)} /> 
-
-  return (
+    return (
     <div className="container">
       <h1>Tic Tac Toe</h1>
-      {status}
+      <Status player={this.state.player} 
+      setPlayer={(e) => {this.setPlayer(e)}}
+      winner={this.state.winner} />
     <div className="board">
-      {Box}
+      {this.renderBoxes()}
     </div>
+      <button disabled={!this.state.winner} onClick={() => this.reset()}>Reset</button>
     </div>
     
   );
