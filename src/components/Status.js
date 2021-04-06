@@ -7,8 +7,6 @@ class Status extends Component {
         this.props.setPlayer(e)
     }
 
-    
-
     renderWinner() {
         if (this.props.winner) {
            return <h2>Winner is {this.props.winner}</h2> 
